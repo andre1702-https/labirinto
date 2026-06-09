@@ -111,52 +111,71 @@ void main() {
 //RATINHO
 class RemyPainter extends CustomPainter {
 
-  // Paleta de cores do Remy — rato azulado/cinza do filme
+  // Paleta expandida com mais tons para maior riqueza visual
   static const Map<int, Color> paleta = {
     0: Colors.transparent,      // Fundo vazio
-    1: Color(0xFF4a4a6a),       // Cinza azulado — corpo principal do Remy
-    2: Color(0xFF6a6a8a),       // Cinza claro — barriga e rosto
-    3: Color(0xFFf5c8c8),       // Rosa claro — orelha interna e focinho
-    4: Color(0xFF2a2a4a),       // Cinza escuro — contorno e sombras
-    5: Color(0xFFffffff),       // Branco — olho brilho
-    6: Color(0xFF1a1a2a),       // Quase preto — pupila
-    7: Color(0xFFe8a0a0),       // Rosa médio — nariz
+    1: Color(0xFF4a4e6a),       // Azul-cinza escuro — pelo principal do Remy
+    2: Color(0xFF8a8aaa),       // Azul-cinza claro — reflexo/destaque do pelo
+    3: Color(0xFFffcccc),       // Rosa claro — interior das orelhas
+    4: Color(0xFF1a1a30),       // Azul muito escuro — contorno e sombras
+    5: Color(0xFFffffff),       // Branco puro — brilho dos olhos
+    6: Color(0xFF0a0a20),       // Preto azulado — pupila dos olhos
+    7: Color(0xFFe87878),       // Rosa médio — focinho/nariz
+    8: Color(0xFFc84848),       // Rosa escuro — ponta do nariz
+    9: Color(0xFFd8d8f5),       // Branco azulado — barriga/peito claro
   };
 
-  // Grade 8x8 — sprite do Remy visto de frente
+  // Grade 16x16 — Remy visto de frente com orelhas, olhos, focinho e barriga
   static const List<List<int>> sprite = [
-    [0, 0, 3, 0, 0, 3, 0, 0], // Orelhas (topo)
-    [0, 3, 3, 4, 4, 3, 3, 0], // Orelhas abertas com contorno
-    [0, 4, 1, 1, 1, 1, 4, 0], // Topo da cabeça
-    [4, 1, 2, 6, 1, 6, 2, 4], // Rosto com olhos (pupila escura)
-    [4, 1, 2, 5, 1, 5, 2, 4], // Rosto com brilho nos olhos
-    [4, 1, 2, 7, 2, 7, 2, 4], // Focinho com nariz
-    [0, 4, 1, 2, 2, 1, 4, 0], // Queixo e pescoço
-    [0, 0, 4, 1, 1, 4, 0, 0], // Base do pescoço/corpo
+    // Colunas: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+    /* L 00 */ [0, 0, 0, 4, 3, 3, 4, 0, 0, 4, 3, 3, 4, 0, 0, 0], // Topo das orelhas
+    /* L 01 */ [0, 0, 4, 3, 3, 3, 4, 0, 0, 4, 3, 3, 3, 4, 0, 0], // Orelhas abertas
+    /* L 02 */ [0, 4, 3, 3, 4, 3, 4, 0, 0, 4, 3, 4, 3, 3, 4, 0], // Detalhe interno orelha
+    /* L 03 */ [0, 4, 4, 4, 1, 1, 4, 4, 4, 4, 1, 1, 4, 4, 4, 0], // Transição orelha→cabeça
+    /* L 04 */ [0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0], // Topo da cabeça
+    /* L 05 */ [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4], // Cabeça larga
+    /* L 06 */ [4, 1, 2, 4, 6, 2, 1, 1, 1, 1, 2, 6, 4, 2, 1, 4], // Contorno dos olhos
+    /* L 07 */ [4, 1, 2, 6, 5, 2, 1, 1, 1, 1, 2, 5, 6, 2, 1, 4], // Pupila + brilho
+    /* L 08 */ [4, 1, 1, 4, 2, 1, 1, 1, 1, 1, 1, 2, 4, 1, 1, 4], // Abaixo dos olhos
+    /* L 09 */ [4, 1, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 1, 4], // Início do focinho
+    /* L 10 */ [4, 1, 1, 9, 9, 9, 7, 7, 7, 7, 9, 9, 9, 1, 1, 4], // Focinho com nariz
+    /* L 11 */ [0, 4, 1, 9, 9, 7, 8, 8, 8, 8, 7, 9, 9, 1, 4, 0], // Ponta do nariz detalhada
+    /* L 12 */ [0, 0, 4, 1, 9, 9, 9, 9, 9, 9, 9, 9, 1, 4, 0, 0], // Queixo
+    /* L 13 */ [0, 0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0, 0], // Pescoço
+    /* L 14 */ [0, 4, 1, 1, 1, 9, 9, 1, 1, 9, 9, 1, 1, 1, 4, 0], // Peito com barriga
+    /* L 15 */ [0, 0, 4, 4, 1, 9, 1, 4, 4, 1, 9, 1, 4, 4, 0, 0], // Base do corpo
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
-    int linhas = sprite.length;
-    int colunas = sprite[0].length;
+    int linhas = sprite.length;       // 16 linhas
+    int colunas = sprite[0].length;   // 16 colunas
 
+    // Cada pixel ocupa 1/16 do espaço disponível na célula
     double larguraPixel = size.width / colunas;
     double alturaPixel = size.height / linhas;
 
     for (int y = 0; y < linhas; y++) {
       for (int x = 0; x < colunas; x++) {
         int valor = sprite[y][x];
-        if (valor == 0) continue; // Pula transparentes
+        if (valor == 0) continue; // Pixels transparentes são pulados
 
         final paint = Paint()..color = paleta[valor]!;
+
         canvas.drawRect(
-          Rect.fromLTWH(x * larguraPixel, y * alturaPixel, larguraPixel, alturaPixel),
+          Rect.fromLTWH(
+            x * larguraPixel,
+            y * alturaPixel,
+            larguraPixel,
+            alturaPixel,
+          ),
           paint,
         );
       }
     }
   }
 
+  // A sprite não muda, então não precisa redesenhar
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
