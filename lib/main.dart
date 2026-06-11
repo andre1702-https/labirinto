@@ -272,48 +272,53 @@ class PisoMadeiraPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-//PRATO
-class PratoSaidaPainter extends CustomPainter {
+//QUEIJO
+class QueijoPainter extends CustomPainter {
 
-  // Paleta do prato de ratatouille — legumes coloridos em prato branco
+  // Paleta do queijo
   static const Map<int, Color> paleta = {
-    0: Colors.transparent,      // Fundo vazio
-    1: Color(0xFFf5f0e8),       // Branco creme — prato
-    2: Color(0xFFd4c9b0),       // Bege escuro — borda do prato
-    3: Color(0xFFc0392b),       // Vermelho — tomate/abobrinha vermelha
-    4: Color(0xFF27ae60),       // Verde — abobrinha verde
-    5: Color(0xFFf39c12),       // Laranja — abóbora/cenoura
-    6: Color(0xFF8e44ad),       // Roxo — berinjela
-    7: Color(0xFFf5c842),       // Dourado — molho
+    0: Colors.transparent,      // Fundo
+    1: Color(0xFFF4D03F),       // Amarelo claro
+    2: Color(0xFFE1B12C),       // Amarelo escuro (borda/sombra)
+    3: Color(0xFFD4AC0D),       // Furos
   };
 
-  // Grade 8x8 — prato com fatias coloridas de legumes em espiral
+  // Sprite 8x8 - pedaço de queijo
   static const List<List<int>> sprite = [
-    [0, 0, 2, 2, 2, 2, 0, 0], // Borda superior do prato
-    [0, 2, 1, 1, 1, 1, 2, 0], // Interior do prato
-    [2, 1, 3, 4, 3, 4, 1, 2], // Fatias vermelha e verde alternadas
-    [2, 1, 7, 5, 6, 7, 1, 2], // Molho dourado, laranja e berinjela
-    [2, 1, 6, 7, 5, 3, 1, 2], // Mais fatias coloridas
-    [2, 1, 4, 3, 4, 6, 1, 2], // Verde e vermelho
-    [0, 2, 1, 7, 7, 1, 2, 0], // Base do prato com molho
-    [0, 0, 2, 2, 2, 2, 0, 0], // Borda inferior
+    [0, 0, 0, 0, 2, 0, 0, 0],
+    [0, 0, 0, 2, 1, 2, 0, 0],
+    [0, 0, 2, 1, 1, 1, 2, 0],
+    [0, 2, 1, 1, 3, 1, 1, 2],
+    [2, 1, 1, 1, 1, 3, 1, 2],
+    [2, 1, 3, 1, 1, 1, 1, 2],
+    [2, 1, 1, 1, 3, 1, 1, 2],
+    [0, 2, 2, 2, 2, 2, 2, 0],
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     int linhas = sprite.length;
     int colunas = sprite[0].length;
+
     double larguraPixel = size.width / colunas;
     double alturaPixel = size.height / linhas;
 
     for (int y = 0; y < linhas; y++) {
       for (int x = 0; x < colunas; x++) {
         int valor = sprite[y][x];
+
         if (valor == 0) continue;
 
-        final paint = Paint()..color = paleta[valor]!;
+        final paint = Paint()
+          ..color = paleta[valor]!;
+
         canvas.drawRect(
-          Rect.fromLTWH(x * larguraPixel, y * alturaPixel, larguraPixel, alturaPixel),
+          Rect.fromLTWH(
+            x * larguraPixel,
+            y * alturaPixel,
+            larguraPixel,
+            alturaPixel,
+          ),
           paint,
         );
       }
@@ -387,7 +392,7 @@ class _TelaDoJogoState extends State<TelaDoJogo> {
   late List<List<int>> mapaDoLabirinto; 
   // 3. VARIÁVEIS DE PROGRESSÃO 
   int nivelAtual = 1; 
-  int tamanhoAtualDaMatriz = 7; // Começamos com um mapa 7x7 (Use sempre números ímpares!) 
+  int tamanhoAtualDaMatriz = 13; // Começamos com um mapa 7x7 (Use sempre números ímpares!) 
 
   int posicaoPersonagemX = 1;
   int posicaoPersonagemY = 1;
@@ -736,7 +741,7 @@ tempoDecorrido = 0;
                     margin: EdgeInsets.all(1),
                     child: CustomPaint(
                       painter: PisoMadeiraPainter(),
-                      child: CustomPaint(painter: PratoSaidaPainter()),
+                      child: CustomPaint(painter: QueijoPainter()),
                     ),
                   );
                 },
