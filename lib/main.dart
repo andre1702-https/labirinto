@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart'; 
 import 'dart:async'; // 1. IMPORTANTE: Biblioteca para usar o Timer! 
 import 'dart:math'; // 1. IMPORTANTE: Biblioteca para usar o Random()! 
+import 'package:animated_text_kit/animated_text_kit.dart';//Para animação do dialogo
+import 'dart:collection';
 
 
 class TelaDeSplash extends StatelessWidget {
@@ -374,43 +376,110 @@ class QueijoPainter extends CustomPainter {
 
 //RATOEIRA
 class RatoeiraPainter extends CustomPainter {
+  static const Map<int, Color> paleta = {
+    1: Color(0xFFC0C0C0), // metal claro
+    2: Color(0xFF808080), // metal escuro
+    3: Color(0xFF404040), // sombra
+    4: Color(0xFFB0B0B0), // mola
+    5: Color(0xFFFFD54F), // queijo
+  };
+
+  static const List<List<int>> sprite = [
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0],
+
+[0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,4,0,4,0,4,0,4,0,4,0,4,0,4,0,4,0,4,0,4,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0],
+
+[0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+];
+
   @override
   void paint(Canvas canvas, Size size) {
+    final pixelW = size.width / sprite[0].length;
+    final pixelH = size.height / sprite.length;
 
-    final base = Paint()
-      ..color = Color(0xFF8D6E63);
+    for (int y = 0; y < sprite.length; y++) {
+      for (int x = 0; x < sprite[y].length; x++) {
+        final cor = sprite[y][x];
+        if (cor == 0) continue;
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          size.width * 0.15,
-          size.height * 0.6,
-          size.width * 0.7,
-          size.height * 0.2,
-        ),
-        Radius.circular(4),
-      ),
-      base,
-    );
-
-    final metal = Paint()
-      ..color = Colors.grey.shade300
-      ..strokeWidth = 3;
-
-    canvas.drawArc(
-      Rect.fromCenter(
-        center: Offset(
-          size.width/2,
-          size.height*0.45,
-        ),
-        width: size.width*0.5,
-        height: size.height*0.5,
-      ),
-      3.14,
-      3.14,
-      false,
-      metal,
-    );
+        canvas.drawRect(
+          Rect.fromLTWH(
+            x * pixelW,
+            y * pixelH,
+            pixelW,
+            pixelH,
+          ),
+          Paint()..color = paleta[cor]!,
+        );
+      }
+    }
   }
 
   @override
@@ -428,18 +497,121 @@ class MeuJogoApp extends StatelessWidget {
     );
   }
 }
+//TELA DIALOGO INICIAL
+class PaginaTutorial {
+  final String titulo;
+  final String texto;
 
+  PaginaTutorial({
+    required this.titulo,
+    required this.texto,
+  });
+}
 // Criamos um novo Widget para representar a tela onde o labirinto será desenhado.
 class TelaDoJogo extends StatefulWidget {
   @override
   _TelaDoJogoState createState() => _TelaDoJogoState();
   }
   
+
 // O "State" guarda as informações que mudam durante o jogo.
 class _TelaDoJogoState extends State<TelaDoJogo> {
+  //TUTORIAL
+  bool mostrarTutorial = true;
+  final List<PaginaTutorial> tutorial = [
+
+  PaginaTutorial(
+    titulo: "Olá Chef!",
+    texto:
+        "Eu sou o Remmy e preciso da sua ajuda para encontrar o queijo perdido.",
+  ),
+
+  PaginaTutorial(
+    titulo: "Como Jogar",
+    texto:
+        "Use as setas para mover o Remmy pelos corredores do labirinto.",
+  ),
+
+  PaginaTutorial(
+    titulo: "Cuidado!",
+    texto:
+        "As ratoeiras são perigosas. Se você pisar em uma delas, perderá a partida.",
+  ),
+
+  PaginaTutorial(
+    titulo: "Objetivo",
+    texto:
+        "Encontre o queijo escondido e escape do labirinto para vencer.",
+  ),
+
+];
+int paginaAtualTutorial = 0;
  // 2. A matriz agora é "late" (será criada quando o jogo iniciar) 
-  late List<List<int>> mapaDoLabirinto; 
-    List<Offset> ratoeiras = [];
+  late List<List<int>> mapaDoLabirinto;
+    bool existeCaminhoAteSaida(
+  List<List<int>> mapa,
+  int inicioX,
+  int inicioY,
+  int fimX,
+  int fimY,
+) {
+  Queue<List<int>> fila = Queue();
+
+  List<List<bool>> visitado = List.generate(
+    mapa.length,
+    (_) => List.filled(mapa[0].length, false),
+  );
+
+  fila.add([inicioX, inicioY]);
+  visitado[inicioY][inicioX] = true;
+
+  List<List<int>> direcoes = [
+    [0, -1],
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+  ];
+
+  while (fila.isNotEmpty) {
+    final atual = fila.removeFirst();
+
+    int x = atual[0];
+    int y = atual[1];
+
+    if (x == fimX && y == fimY) {
+      return true;
+    }
+
+    for (var d in direcoes) {
+      int nx = x + d[0];
+      int ny = y + d[1];
+
+      if (
+          nx >= 0 &&
+          ny >= 0 &&
+          ny < mapa.length &&
+          nx < mapa[0].length &&
+          !visitado[ny][nx] &&
+          mapa[ny][nx] != 1 &&
+          mapa[ny][nx] != 9
+      ) {
+        visitado[ny][nx] = true;
+        fila.add([nx, ny]);
+      }
+    }
+  }
+
+  return false;
+}
+bool temRatoeira(int x, int y) {
+  return ratoeiras.any(
+    (r) =>
+        r.dx.toInt() == x &&
+        r.dy.toInt() == y,
+  );
+}
+List<Offset> ratoeiras = [];
+List<Offset> caminhoSeguro = [];
   // 3. VARIÁVEIS DE PROGRESSÃO 
   int nivelAtual = 1; 
   int tamanhoAtualDaMatriz = 11; // Começamos com um mapa 13x13 (Use sempre números ímpares!) 
@@ -506,10 +678,131 @@ Widget _itemHud(
   @override 
   void initState() { 
   super.initState(); 
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    mostrarDialogTutorial();
+  });
   // 4. Cria o primeiro mapa assim que o aplicativo abre 
   mapaDoLabirinto = gerarLabirinto(tamanhoAtualDaMatriz); 
+
 }
 
+//DIALOGO INICIAL
+void mostrarDialogTutorial() {
+  paginaAtualTutorial = 0;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) {
+      return StatefulBuilder(
+        builder: (context, atualizarDialog) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: SizedBox(
+            width: 350,
+            height: 300,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E293B),
+                borderRadius: BorderRadius.circular(35),
+                border: Border.all(
+                  color: const Color(0xFFF5C842),
+                  width: 3,
+                ),
+              ),
+
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  Expanded(
+                    child: AnimatedTextKit(
+                    key: ValueKey(paginaAtualTutorial),
+                      animatedTexts: [
+                        TypewriterAnimatedText(
+                          tutorial[paginaAtualTutorial].texto,
+
+                          speed: Duration(
+                            milliseconds: 35,
+                          ),
+
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+
+                      totalRepeatCount: 1,
+                      displayFullTextOnTap: true,
+                      stopPauseOnTap: true,
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      SizedBox(
+                        width: 90,
+                        height: 90,
+                        child: CustomPaint(
+                          painter: RemyPainter(),
+                        ),
+                      ),
+
+                      SizedBox(width: 15),
+                    ],
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Text(
+                    "${paginaAtualTutorial + 1}/${tutorial.length}",
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ElevatedButton(
+                    onPressed: () {
+
+                      if (paginaAtualTutorial <
+                          tutorial.length - 1) {
+
+                        atualizarDialog(() {
+                          paginaAtualTutorial++;
+                        });
+
+                      } else {
+
+                        Navigator.pop(context);
+
+                      }
+                    },
+                    child: Text(
+                      paginaAtualTutorial ==
+                              tutorial.length - 1
+                          ? "JOGAR"
+                          : "PRÓXIMO",
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
   // 5. O GERADOR PROCEDURAL DE LABIRINTOS 
   List<List<int>> gerarLabirinto(int tamanho) { 
@@ -530,6 +823,9 @@ Widget _itemHud(
       for (var direcao in direcoes) { 
         int proximoX = x + direcao[0]; 
         int proximoY = y + direcao[1]; 
+        if (temRatoeira(proximoY, proximoY)) {
+          continue;
+        }
  
         // Verifica se o próximo pulo está dentro do mapa e se é uma parede virgem 
         if (proximoY > 0 && proximoY < tamanho - 1 && 
@@ -551,6 +847,7 @@ Widget _itemHud(
     // Define Início e Fim 
     novoMapa[1][1] = 2; // Ponto de Partida 
     novoMapa[tamanho - 2][tamanho - 2] = 3; // Saída sempre no canto inferior direito 
+    
  
     // Garante que a saída não fique bloqueada por acaso 
     novoMapa[tamanho - 2][tamanho - 3] = 0; 
@@ -560,35 +857,42 @@ Widget _itemHud(
     int quantidadeDeRatoeiras = tamanho ~/ 2;
     for (int i = 0; i < quantidadeDeRatoeiras; i++) {
 
-      int x;
-      int y;
+    int x;
+    int y;
 
-      do {
+    do {
+      x = aleatorio.nextInt(tamanho);
+      y = aleatorio.nextInt(tamanho);
+    } while (
+        novoMapa[y][x] != 0 ||
+        (x == 1 && y == 1) ||
+        (x == tamanho - 2 && y == tamanho - 2)
+    );
 
-        x = aleatorio.nextInt(tamanho);
-        y = aleatorio.nextInt(tamanho);
+    // tenta colocar
+    novoMapa[y][x] = 9;
 
-      } while (
+    bool caminhoLivre = existeCaminhoAteSaida(
+      novoMapa,
+      1,
+      1,
+      tamanho - 2,
+      tamanho - 2,
+    );
 
-          novoMapa[y][x] != 0 ||
-
-          (x == 1 && y == 1) ||
-
-          (x == tamanho - 2 && y == tamanho - 2)
-
-      );
-
+    if (caminhoLivre) {
       ratoeiras.add(
         Offset(
           x.toDouble(),
           y.toDouble(),
         ),
       );
+    } else {
+      novoMapa[y][x] = 0;
     }
- 
-    return novoMapa; 
   }
-
+return novoMapa; 
+  }
 
 
   void moverPersonagem(DragUpdateDetails detalhes) {
@@ -870,7 +1174,17 @@ Widget _itemHud(
                       ),
                     );
                   }
-
+                  if (temRatoeira) {
+                      return Container(
+                        margin: EdgeInsets.all(1),
+                        child: CustomPaint(
+                          painter: PisoPremiumPainter(),
+                          child: CustomPaint(
+                            painter: RatoeiraPainter(),
+                          ),
+                        ),
+                      );
+                    }
                   // PAREDE → Azulejo da cozinha
                   if (valor == 1) {
                     return Container(
@@ -884,17 +1198,6 @@ Widget _itemHud(
                     return Container(
                       margin: EdgeInsets.all(1),
                       child: CustomPaint(painter: PisoPremiumPainter()),
-                    );
-                  }
-            if (temRatoeira) {
-                    return Container(
-                      margin: EdgeInsets.all(1),
-                      child: CustomPaint(
-                        painter: PisoPremiumPainter(),
-                        child: CustomPaint(
-                          painter: RatoeiraPainter(),
-                        ),
-                      ),
                     );
                   }
                   if (valor == 4) {
