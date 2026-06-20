@@ -486,6 +486,54 @@ class RatoeiraPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
+//TELA FINAL
+class CheesePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final amarelo = Paint()
+      ..color = const Color(0xFFFFD54F);
+
+    final sombra = Paint()
+      ..color = const Color(0xFFFFB300);
+
+    // Corpo do queijo
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          size.width * 0.1,
+          size.height * 0.2,
+          size.width * 0.8,
+          size.height * 0.6,
+        ),
+        const Radius.circular(8),
+      ),
+      amarelo,
+    );
+
+    // Buracos
+    canvas.drawCircle(
+      Offset(size.width * 0.3, size.height * 0.4),
+      size.width * 0.08,
+      sombra,
+    );
+
+    canvas.drawCircle(
+      Offset(size.width * 0.6, size.height * 0.55),
+      size.width * 0.06,
+      sombra,
+    );
+
+    canvas.drawCircle(
+      Offset(size.width * 0.75, size.height * 0.35),
+      size.width * 0.05,
+      sombra,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
 
 class MeuJogoApp extends StatelessWidget {
   @override
@@ -990,25 +1038,170 @@ return novoMapa;
       ), 
     ); 
   } 
- 
-  void avancarFase() { 
-    setState(() { 
-      nivelAtual++; 
-       
-      // A cada 5 níveis, aumentamos o labirinto em 2 blocos (para continuar ímpar) 
-      if (nivelAtual % 5 == 0) { 
-        tamanhoAtualDaMatriz += 2; 
-      } 
- 
-      // Gera o novo mapa com o tamanho atualizado 
-      mapaDoLabirinto = gerarLabirinto(tamanhoAtualDaMatriz); 
-      // Reseta as posições para o início 
-      posicaoPersonagemX = 1; 
-      posicaoPersonagemY = 1; 
-      passosDados = 0;  
-      tempoDecorrido = 0;  
-      }); 
-      }
+
+ //Tela final
+ void mostrarTelaFinal() {
+    
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: const Color(0xFF1F2937),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+            SizedBox(
+              width: 180,
+              height: 180,
+              child: CustomPaint(
+                painter: RemyPainter(),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // PILHA DE QUEIJOS
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: List.generate(
+                12,
+                (_) => SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CustomPaint(
+                    painter: CheesePainter(),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            const Text(
+            "🏆 PARABÉNS!",
+            style: TextStyle(
+              color: Color(0xFFFFD54F),
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+            const SizedBox(height: 10),
+
+              const Text(
+                "Remmy encontrou todos os queijos perdidos da cozinha!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFD54F),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Column(
+                  children: [
+
+                    Text(
+                      "🏆 TÍTULO DESBLOQUEADO",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 8),
+
+                    Text(
+                      "CHEF RATATOUILLE",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+
+              const Text(
+                "Você concluiu as 25 fases do jogo.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white70,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {
+
+                  Navigator.pop(context);
+
+                  setState(() {
+                    nivelAtual = 1;
+                    tamanhoAtualDaMatriz = 11;
+
+                    mapaDoLabirinto =
+                        gerarLabirinto(tamanhoAtualDaMatriz);
+
+                    posicaoPersonagemX = 1;
+                    posicaoPersonagemY = 1;
+
+                    passosDados = 0;
+                    tempoDecorrido = 0;
+
+                    jogoIniciado = false;
+                  });
+                },
+                child: const Text("Jogar Novamente"),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+  void avancarFase() {
+
+  // Se terminou a fase 25, mostra a tela final
+  if (nivelAtual >= 25) {
+    mostrarTelaFinal();
+    return;
+  }
+
+  setState(() {
+    nivelAtual++;
+
+    // A cada 5 níveis aumenta o tamanho do labirinto
+    if (nivelAtual % 5 == 0) {
+      tamanhoAtualDaMatriz += 2;
+    }
+
+    mapaDoLabirinto = gerarLabirinto(tamanhoAtualDaMatriz);
+
+    posicaoPersonagemX = 1;
+    posicaoPersonagemY = 1;
+
+    passosDados = 0;
+    tempoDecorrido = 0;
+  });
+}
       void mostrarGameOver() {
 
         showDialog(
